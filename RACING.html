@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>TRACK</title>
+</head>
+<body>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<script>
+
+    var canvas;
+    var canvasContext;
+
+    var carX, carY;
+    var carSpeedX = 0;
+    var carSpeedY = 0;
+    var carSpeedXMultipler = 0.35;
+
+    var carRadius = 10;
+
+    const TRACK_WIDTH = 40;
+    const TRACK_HEIGHT = 40;
+    const TRACK_GAP = 1;
+    const TRACK_COLS = 20;
+    const TRACK_ROWS = 15;
+
+    const INITIAL_CAR_SPEED_X = 5;
+    const INITIAL_CAR_SPEED_Y = 5;
+
+    var debug = false;
+
+    var trackGrid =
+    [
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+        1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1,
+        1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1,
+        1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1,
+        1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+        1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
+        1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+        1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+        1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+        1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
+        1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
+        1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    ];
+
+
+    window.onload = function () {
+        const fps = 30;
+        canvas = document.getElementById('gameCanvas');
+        canvasContext = canvas.getContext('2d');
+
+        //hack for keydown events. probably a better way to do this.
+        //http://stackoverflow.com/questions/15631991/how-to-register-onkeydown-event-for-html5-canvas
+        canvas.tabIndex = 1000;
+        canvas.style.outline = "none";
+
+        resetCar();
+
+        canvas.addEventListener('keydown', function(evt) {
+            var keyCode = evt.keyCode;
+            //keycode 81 = q
+            if (keyCode === 81) {
+                if (debug === true) {
+                    debug = false;
+                } else {
+                    debug = true;
+                }
+            }
+        });
+        
+        setInterval(function() {
+            move();
+            draw();
+        }, 1000 / fps);
+    };
+
+    function move() {
+
+        const carLeft = carX - carRadius;
+        const carRight = carX + carRadius;
+        const carTop = carY - carRadius;
+
+        ///todo: BUG, car get's stuck in the side on some collisions
+        if (carLeft < 0) {
+            carSpeedX *= -1;
+        }
+
+        if (carRight > canvas.width) {
+            carSpeedX *= -1;
+        }
+
+        if (carTop < 0) {
+            carSpeedY *= -1;
+        }
+
+        if (carTop >= canvas.height) {
+            resetCar();
+        }
+        
+        ///todo: need to fix carX, carY to detect at outer edge of circle and not center (clipping issues)
+        BounceOffTrackAtPixelCoord(carX, carY);
+
+        carX += carSpeedX;
+        carY += carSpeedY;
+    }
+
+    function draw() {
+        colorRect(0, 0, canvas.width, canvas.height, '#000000');
+
+        drawTracks();
+
+        colorCircle(carX, carY, carRadius, '#FFFFFF');
+
+        drawDebug();
+    }
+
+    function drawTracks() {
+        for (var i = 0; i < TRACK_COLS; i++) {
+            for (var j = 0; j < TRACK_ROWS; j++) {
+
+                if (isTrackAtTileCoord(i, j)) {
+                    colorRect((i * TRACK_WIDTH), (j * TRACK_HEIGHT), TRACK_WIDTH - TRACK_GAP,
+                    TRACK_HEIGHT - TRACK_GAP, '#862d2d');
+                }
+            }
+        }  
+    }
+
+    function colorRect(topLeftX, topRightY, boxWidth, boxHeight, fillColor) {
+        canvasContext.fillStyle = fillColor;
+        canvasContext.fillRect(topLeftX, topRightY, boxWidth, boxHeight);
+    }
+
+    function colorCircle(centerX, centerY, radius, fillColor) {
+        canvasContext.fillStyle = fillColor;
+        canvasContext.beginPath();
+        canvasContext.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
+        canvasContext.fill();
+    }
+
+    function resetCar() {
+        carX = 80
+        carY = 150;
+        carSpeedX = INITIAL_CAR_SPEED_X;
+        carSpeedY = INITIAL_CAR_SPEED_Y;
+    }
+
+    function trackTileToIndex(tileCol, tileRow) {
+        return tileCol + tileRow * TRACK_COLS;
+    }
+
+    function isTrackAtTileCoord(trackTileCol, trackTileRow) {
+        var trackIndex = trackTileToIndex(trackTileCol, trackTileRow);
+        return (trackGrid[trackIndex] === 1);
+    }
+
+    function BounceOffTrackAtPixelCoord(pixelX, pixelY) {
+        var tileCol = Math.floor(pixelX / TRACK_WIDTH);
+        var tileRow = Math.floor(pixelY / TRACK_HEIGHT);
+
+        if (tileCol < 0 || tileCol >= TRACK_COLS || tileRow < 0 || tileRow >= TRACK_ROWS) {
+            return;
+        }
+
+        var trackIndex = trackTileToIndex(tileCol, tileRow);
+
+        if (trackGrid[trackIndex] === 1) {
+            var prevCarX = pixelX - carSpeedX;
+            var prevCarY = pixelY - carSpeedY;
+            var prevTileCol = Math.floor(prevCarX / TRACK_WIDTH);
+            var prevTileRow = Math.floor(prevCarY / TRACK_HEIGHT);
+
+            var bothTestFailed = true;
+
+            ///todo: getting weird bounces where both tileCol!=prevtilecol and tileRow!=prevtilerow
+            var adjacentTrackIndex;
+            if (tileCol !== prevTileCol) {
+                adjacentTrackIndex = trackTileToIndex(prevTileCol, tileRow);
+                if (trackIndex[adjacentTrackIndex] !== 1) {
+                    carSpeedX *= -1;
+                    bothTestFailed = false;
+                }
+            }
+            if (tileRow !== prevTileRow) {
+                adjacentTrackIndex = trackTileToIndex(tileCol, prevTileRow);
+                if (trackIndex[adjacentTrackIndex] !== 1) {
+                    carSpeedY *= -1;
+                    bothTestFailed = false;
+                }
+            }
+
+            if (bothTestFailed) {
+                carSpeedX *= -1;
+                carSpeedY *= -1;
+            }
+        }
+    }
+
+    function drawDebug() {
+        if (debug) {
+
+            var carSize = 2.5;
+
+            colorCircle(carX, carY - carRadius, carSize, 'red');
+            colorCircle(carX, carY + carRadius, carSize, 'green');
+            colorCircle(carX - carRadius, carY, carSize, 'blue');
+            colorCircle(carX + carRadius, carY, carSize, 'cyan');
+
+        }
+    }
+</script>
+
+</body>
+</html>
