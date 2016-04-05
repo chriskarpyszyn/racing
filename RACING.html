@@ -16,8 +16,10 @@
     var carSpeedX = 0;
     var carSpeedY = 0;
     var carSpeedXMultipler = 0.35;
-
     var carRadius = 10;
+
+    var carPic = document.createElement("img");
+    var carPicLoaded = false;
 
     const TRACK_WIDTH = 40;
     const TRACK_HEIGHT = 40;
@@ -49,11 +51,15 @@
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
     ];
 
-
     window.onload = function () {
         const fps = 30;
         canvas = document.getElementById('gameCanvas');
         canvasContext = canvas.getContext('2d');
+
+        carPic.onload = function () {
+            carPicLoaded = true;
+        };
+        carPic.src = "player1.png";
 
         //hack for keydown events. probably a better way to do this.
         //http://stackoverflow.com/questions/15631991/how-to-register-onkeydown-event-for-html5-canvas
@@ -115,9 +121,15 @@
 
         drawTracks();
 
-        colorCircle(carX, carY, carRadius, '#FFFFFF');
+        drawCar();
 
         drawDebug();
+    }
+
+    function drawCar() {
+        if (carPicLoaded) {
+            canvasContext.drawImage(carPic, carX - carPic.width / 2, carY - carPic.height / 2);
+        }
     }
 
     function drawTracks() {
