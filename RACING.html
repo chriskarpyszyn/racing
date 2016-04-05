@@ -17,6 +17,7 @@
     var carSpeedY = 0;
     var carSpeedXMultipler = 0.35;
     var carRadius = 10;
+    var carAngle = 0;
 
     var carPic = document.createElement("img");
     var carPicLoaded = false;
@@ -127,9 +128,18 @@
     }
 
     function drawCar() {
+        carAngle += 0.2;
         if (carPicLoaded) {
-            canvasContext.drawImage(carPic, carX - carPic.width / 2, carY - carPic.height / 2);
+            drawBitmapCenteredAtLocationWithRotation(carPic, carX, carY, carAngle);
         }
+    }
+
+    function drawBitmapCenteredAtLocationWithRotation(graphic, X, Y, withAngle) {
+        canvasContext.save(); //allows us to undo translate movement and rotate spinm
+        canvasContext.translate(X, Y); //sets point where graphic goes
+        canvasContext.rotate(withAngle); // sets the roation
+        canvasContext.drawImage(graphic, -graphic.width / 2, -graphic.height / 2); //center and draw
+        canvasContext.restore(); //undo the translation movement and rotation since save()
     }
 
     function drawTracks() {
