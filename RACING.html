@@ -19,6 +19,12 @@
     var carRadius = 10;
     var carAngle = 0;
 
+    const SPEED_DECAY_MULT = 0.94;
+    const DRIVE_POWER = 0.5;
+    const REVERSE_POWER = 0.2;
+    const TURN_RATE = 0.03;
+    const MIN_TURN_SPEED = 0.5;
+
     var carPic = document.createElement("img");
     var carPicLoaded = false;
 
@@ -101,57 +107,51 @@
 
     function keyPressed(evt) {
         //document.getElementById("debugText").innerHTML = "keyCode Pushed: " + evt.keyCode;
-
-        if (evt.keyCode === KEY_UP_ARROW) {
-            keyHeld_Gas = true;
-        }
-        if (evt.keyCode === KEY_DOWN_ARROW) {
-            keyHeld_Reverse = true;
-        }
-        if (evt.keyCode === KEY_RIGHT_ARROW) {
-            keyHeld_TurnRight = true;
-        }
-        if (evt.keyCode === KEY_LEFT_ARROW) {
-            keyHeld_TurnLeft = true;
-        }
-
-        evt.preventDefault();
-
+        setKeyHoldState(evt.keyCode, true);
+        evt.preventDefault(); //stops the default behavior of arrow keys
     }
 
     function keyReleased(evt) {
         //document.getElementById("debugText").innerHTML = "keyCode Released: " + evt.keyCode;
+        setKeyHoldState(evt.keyCode, false);
+    }
 
-        if (evt.keyCode === KEY_UP_ARROW) {
-            keyHeld_Gas = false;
+    function setKeyHoldState(keyCode, setTo) {
+        if (keyCode === KEY_UP_ARROW) {
+            keyHeld_Gas = setTo;
         }
-        if (evt.keyCode === KEY_DOWN_ARROW) {
-            keyHeld_Reverse = false;
+        if (keyCode === KEY_DOWN_ARROW) {
+            keyHeld_Reverse = setTo;
         }
-        if (evt.keyCode === KEY_RIGHT_ARROW) {
-            keyHeld_TurnRight = false;
+        if (keyCode === KEY_RIGHT_ARROW) {
+            keyHeld_TurnRight = setTo;
         }
-        if (evt.keyCode === KEY_LEFT_ARROW) {
-            keyHeld_TurnLeft = false;
+        if (keyCode === KEY_LEFT_ARROW) {
+            keyHeld_TurnLeft = setTo;
         }
-
-        evt.preventDefault();
     }
 
     function move() {
 
-      if (keyHeld_Gas) {
-        carSpeed += 0.3;
-      }
-      if (keyHeld_Reverse) {
-        carSpeed += -0.3;
-      }
-      if (keyHeld_TurnRight) {
-        carAngle += 0.03*Math.PI;
-      }
-      if (keyHeld_TurnLeft) {
-        carAngle += -0.03*Math.PI;
-      }
+        if (keyHeld_Gas) {
+            carSpeed += DRIVE_POWER;
+        }
+
+        if (keyHeld_Reverse) {
+            carSpeed += -REVERSE_POWER;
+        }
+
+        if (keyHeld_TurnRight) {
+            if (Math.abs(carSpeed) > MIN_TURN_SPEED) {
+                carAngle += TURN_RATE * Math.PI;
+            }
+        }
+
+        if (keyHeld_TurnLeft) {
+            if (Math.abs(carSpeed) > MIN_TURN_SPEED) {
+                carAngle += -TURN_RATE * Math.PI;
+            }
+        }
 
         //const carLeft = carX - carRadius;
         //const carRight = carX + carRadius;
@@ -177,6 +177,7 @@
         /////todo: need to fix carX, carY to detect at outer edge of circle and not center (clipping issues)
         //BounceOffTrackAtPixelCoord(carX, carY);
 
+        carSpeed *= SPEED_DECAY_MULT;
         carX += Math.cos(carAngle) * carSpeed;
         carY += Math.sin(carAngle) * carSpeed;
 
