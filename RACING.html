@@ -6,7 +6,8 @@
 </head>
 <body>
 <canvas id="gameCanvas" width="800" height="600"></canvas>
-<p id="debugText">(recent text display or temporary debug output)</p>
+<p id="debugText"></p>
+
 <script>
 
     var canvas;
@@ -31,6 +32,11 @@
     const KEY_DOWN_ARROW = 40;
     const KEY_LEFT_ARROW = 37;
     const KEY_RIGHT_ARROW = 39;
+
+    var keyHeld_Gas = false;
+    var keyHeld_Reverse = false;
+    var keyHeld_TurnLeft = false;
+    var keyHeld_TurnRight = false;
 
     const INITIAL_CAR_SPEED = 0;
 
@@ -86,7 +92,7 @@
         //        }
         //    }
         //});
-        
+
         setInterval(function() {
             move();
             draw();
@@ -94,19 +100,19 @@
     };
 
     function keyPressed(evt) {
-        document.getElementById("debugText").innerHTML = "keyCode Pushed: " + evt.keyCode;
+        //document.getElementById("debugText").innerHTML = "keyCode Pushed: " + evt.keyCode;
 
         if (evt.keyCode === KEY_UP_ARROW) {
-            carSpeed += 1.5;
+            keyHeld_Gas = true;
         }
         if (evt.keyCode === KEY_DOWN_ARROW) {
-            carSpeed -= 1.5;
+            keyHeld_Reverse = true;
         }
         if (evt.keyCode === KEY_RIGHT_ARROW) {
-            carAngle += 0.25 * Math.PI;
+            keyHeld_TurnRight = true;
         }
         if (evt.keyCode === KEY_LEFT_ARROW) {
-            carAngle -= 0.25 * Math.PI;
+            keyHeld_TurnLeft = true;
         }
 
         evt.preventDefault();
@@ -114,10 +120,38 @@
     }
 
     function keyReleased(evt) {
-        document.getElementById("debugText").innerHTML = "keyCode Released: " + evt.keyCode;
+        //document.getElementById("debugText").innerHTML = "keyCode Released: " + evt.keyCode;
+
+        if (evt.keyCode === KEY_UP_ARROW) {
+            keyHeld_Gas = false;
+        }
+        if (evt.keyCode === KEY_DOWN_ARROW) {
+            keyHeld_Reverse = false;
+        }
+        if (evt.keyCode === KEY_RIGHT_ARROW) {
+            keyHeld_TurnRight = false;
+        }
+        if (evt.keyCode === KEY_LEFT_ARROW) {
+            keyHeld_TurnLeft = false;
+        }
+
+        evt.preventDefault();
     }
 
     function move() {
+
+      if (keyHeld_Gas) {
+        carSpeed += 0.3;
+      }
+      if (keyHeld_Reverse) {
+        carSpeed += -0.3;
+      }
+      if (keyHeld_TurnRight) {
+        carAngle += 0.03*Math.PI;
+      }
+      if (keyHeld_TurnLeft) {
+        carAngle += -0.03*Math.PI;
+      }
 
         //const carLeft = carX - carRadius;
         //const carRight = carX + carRadius;
@@ -139,7 +173,7 @@
         //if (carTop >= canvas.height) {
         //    resetCar();
         //}
-        
+
         /////todo: need to fix carX, carY to detect at outer edge of circle and not center (clipping issues)
         //BounceOffTrackAtPixelCoord(carX, carY);
 
@@ -182,7 +216,7 @@
                     TRACK_HEIGHT - TRACK_GAP, '#862d2d');
                 }
             }
-        }  
+        }
     }
 
     function colorRect(topLeftX, topRightY, boxWidth, boxHeight, fillColor) {
