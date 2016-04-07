@@ -45,6 +45,7 @@
     var keyHeld_TurnRight = false;
 
     const INITIAL_CAR_SPEED = 0;
+    const INITIAL_CAR_ANGLE = -0.5 * Math.PI;
 
     var debug = false;
 
@@ -60,12 +61,16 @@
         1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
         1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
         1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-        1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+        1, 0, 2, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1,
         1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
         1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
         1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
     ];
+
+    const TRACK_ROAD = 0;
+    const TRACK_WALL = 1;
+    const TRACK_PLAYER = 2;
 
     window.onload = function () {
         const fps = 30;
@@ -77,27 +82,10 @@
         };
         carPic.src = "player1.png";
 
-        //hack for keydown events. probably a better way to do this.
-        //http://stackoverflow.com/questions/15631991/how-to-register-onkeydown-event-for-html5-canvas
-        //canvas.tabIndex = 1000;
-        //canvas.style.outline = "none";
-
         resetCar();
 
         document.addEventListener("keydown", keyPressed);
         document.addEventListener("keyup", keyReleased);
-
-        //canvas.addEventListener('keydown', function(evt) {
-        //    var keyCode = evt.keyCode;
-        //    //keycode 81 = q
-        //    if (keyCode === 81) {
-        //        if (debug === true) {
-        //            debug = false;
-        //        } else {
-        //            debug = true;
-        //        }
-        //    }
-        //});
 
         setInterval(function() {
             move();
@@ -233,9 +221,20 @@
     }
 
     function resetCar() {
-        carX = canvas.width / 2;
-        carY = canvas.height / 2;
         carSpeed = INITIAL_CAR_SPEED;
+        carAngle = INITIAL_CAR_ANGLE;
+
+        for (var i = 0; i < trackGrid.length; i++) {
+            if (trackGrid[i] === TRACK_PLAYER) {
+                var tileRow = Math.floor(i / TRACK_COLS);
+                var tileCol = i % TRACK_COLS;
+
+                carX = tileCol * TRACK_WIDTH + 0.5 * TRACK_WIDTH;
+                carY = tileRow * TRACK_HEIGHT + 0.5 * TRACK_HEIGHT;
+                trackGrid[i] = TRACK_ROAD;
+                break;
+            }
+        }
     }
 
     function trackTileToIndex(tileCol, tileRow) {
