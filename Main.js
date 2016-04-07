@@ -1,20 +1,16 @@
-﻿var canvas;
+const FPS = 30;
+var canvas;
 var canvasContext;
+
+var imagesToLoad = 3;
 
 // var debug = false;
 
 window.onload = function () {
-    const fps = 30;
     canvas = document.getElementById('gameCanvas');
     canvasContext = canvas.getContext('2d');
 
-    initCar();
-    initInput();
-
-    setInterval(function() {
-        move();
-        draw();
-    }, 1000 / fps);
+    loadImages();
 };
 
 function move() {
@@ -26,6 +22,16 @@ function draw() {
     drawWalls();
     drawCar();
     // drawDebug();
+}
+
+function startGame() {
+        setInterval(function() {
+            move();
+            draw();
+        }, 1000 / FPS);
+
+        initCar();
+        initInput();
 }
 
 // function drawDebug() {

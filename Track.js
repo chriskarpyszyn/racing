@@ -1,6 +1,5 @@
 const TRACK_WIDTH = 40;
 const TRACK_HEIGHT = 40;
-const TRACK_GAP = 1;
 const TRACK_COLS = 20;
 const TRACK_ROWS = 15;
 
@@ -53,9 +52,15 @@ function drawWalls() {
     for (var i = 0; i < TRACK_COLS; i++) {
         for (var j = 0; j < TRACK_ROWS; j++) {
 
+            var trackX = i * TRACK_WIDTH;
+            var trackY = j * TRACK_HEIGHT;
             if (isWallAtTileCoord(i, j)) {
-                colorRect((i * TRACK_WIDTH), (j * TRACK_HEIGHT), TRACK_WIDTH - TRACK_GAP,
-                TRACK_HEIGHT - TRACK_GAP, '#862d2d');
+                canvasContext.drawImage(trackWallPic, trackX, trackY);
+                // colorRect((i * TRACK_WIDTH), (j * TRACK_HEIGHT), TRACK_WIDTH - TRACK_GAP,
+                // TRACK_HEIGHT - TRACK_GAP, '#862d2d');
+            }
+            else {
+                canvasContext.drawImage(trackRoadPic, trackX, trackY);
             }
         }
     }

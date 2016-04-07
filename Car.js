@@ -7,15 +7,11 @@ const MIN_TURN_SPEED = 0.5;
 const INITIAL_CAR_SPEED = 0;
 const INITIAL_CAR_ANGLE = -0.5 * Math.PI;
 
-
 var carX, carY;
 var carSpeed = 0;
 var carSpeedXMultipler = 0.35;
 var carRadius = 10;
 var carAngle = 0;
-
-var carPic = document.createElement("img");
-var carPicLoaded = false;
 
 function moveCar() {
     if (keyHeld_Gas) {
@@ -68,16 +64,10 @@ function resetCar() {
 }
 
 function initCar() {
-    carPic.onload = function () {
-        carPicLoaded = true;
-    };
-    carPic.src = "player1.png";
     resetCar();
 }
 
 function drawCar() {
     //carAngle += 0.2;
-    if (carPicLoaded) {
-        drawBitmapCenteredAtLocationWithRotation(carPic, carX, carY, carAngle);
-    }
+    drawBitmapCenteredAtLocationWithRotation(carPic, carX, carY, carAngle);
 }
