@@ -19,7 +19,7 @@ function move() {
 
 function draw() {
     colorRect(0, 0, canvas.width, canvas.height, '#000000');
-    drawWalls();
+    drawTiles();
     drawCar();
     // drawDebug();
 }
