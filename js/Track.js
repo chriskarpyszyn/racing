@@ -60,27 +60,8 @@ function drawTiles() {
 
             var trackIndex = trackTileToIndex(col, row);
             var trackType = trackGrid[trackIndex];
-            var useImg;
 
-            switch (trackType) {
-                case TRACK_ROAD:
-                    useImg = trackRoadPic;
-                    break;
-                case TRACK_WALL:
-                    useImg = trackWallPic;
-                    break;
-                case TRACK_GOAL:
-                    useImg = trackGoalPic;
-                    break;
-                case TRACK_TREE:
-                    useImg = trackTreePic;
-                    break;
-                case TRACK_FLAG:
-                    useImg = trackFlagPic;
-                    break;
-            }
-
-            canvasContext.drawImage(useImg, trackX, trackY);
+            canvasContext.drawImage(trackPics[trackType], trackX, trackY);
         }
     }
 }

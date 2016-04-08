@@ -1,4 +1,10 @@
 var carPic = document.createElement("img");
+var trackPics = [];
+trackPics[TRACK_ROAD] = trackRoadPic;
+trackPics[TRACK_WALL] = trackWallPic;
+trackPics[TRACK_GOAL] = trackGoalPic;
+trackPics[TRACK_TREE] = trackTreePic;
+trackPics[TRACK_FLAG] = trackFlagPic;
 var trackRoadPic = document.createElement("img");
 var trackWallPic = document.createElement("img");
 var trackGoalPic = document.createElement("img");
@@ -9,17 +15,22 @@ var picsToLoad = 0;
 function loadImages() {
     var imageList = [
         { varName: carPic, fileName: "player1.png" },
-        { varName: trackRoadPic, fileName: "track_road.png" },
-        { varName: trackWallPic, fileName: "track_wall.png" },
-        { varName: trackGoalPic, fileName: "track_goal.png" },
-        { varName: trackTreePic, fileName: "track_tree.png" },
-        { varName: trackFlagPic, fileName: "track_flag.png" }
+
+        { trackType: TRACK_ROAD, fileName: "track_road.png" },
+        { trackType: TRACK_WALL, fileName: "track_wall.png" },
+        { trackType: TRACK_GOAL, fileName: "track_goal.png" },
+        { trackType: TRACK_TREE, fileName: "track_tree.png" },
+        { trackType: TRACK_FLAG, fileName: "track_flag.png" }
     ];
 
     picsToLoad = imageList.length;
 
     for (var i = 0; i < imageList.length; i++) {
-        beginLoadingImage(imageList[i].varName, imageList[i].fileName);
+        if (imageList[i].trackType != undefined) {
+            loadImagesForTrackCode(imageList[i].trackType, imageList[i].fileName);
+        } else {
+            beginLoadingImage(imageList[i].varName, imageList[i].fileName);
+        }
     }
 }
 
@@ -33,4 +44,9 @@ function countLoadedImagesAndLaunch() {
     if (picsToLoad === 0) {
         startGame();
     }
+}
+
+function loadImagesForTrackCode(trackCode, fileName) {
+    trackPics[trackCode] = document.createElement("img");
+    beginLoadingImage(trackPics[trackCode], fileName);
 }
