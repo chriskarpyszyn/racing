@@ -5,6 +5,7 @@ var canvasContext;
 var imagesToLoad = 3;
 
 var car1 = new carClass();
+var car2 = new carClass();
 
 // var debug = false;
 
@@ -17,12 +18,14 @@ window.onload = function () {
 
 function move() {
     car1.moveCar();
+    car2.moveCar();
 }
 
 function draw() {
     colorRect(0, 0, canvas.width, canvas.height, '#000000');
     drawTiles();
     car1.drawCar();
+    car2.drawCar();
     // drawDebug();
 }
 
@@ -33,6 +36,7 @@ function startGame() {
         }, 1000 / FPS);
 
         car1.initCar();
+        car2.initCar();
         initInput();
 }
 

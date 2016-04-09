@@ -13,12 +13,14 @@ const KEY_LETTER_D = 68;
 function keyPressed(evt) {
     //document.getElementById("debugText").innerHTML = "keyCode Pushed: " + evt.keyCode;
     setKeyHoldState(evt.keyCode, car1, true);
+    setKeyHoldState(evt.keyCode, car2, true);
     evt.preventDefault(); //stops the default behavior of arrow keys
 }
 
 function keyReleased(evt) {
     //document.getElementById("debugText").innerHTML = "keyCode Released: " + evt.keyCode;
     setKeyHoldState(evt.keyCode, car1, false);
+    setKeyHoldState(evt.keyCode, car2, false);
 }
 
 function setKeyHoldState(keyCode, car, setTo) {
@@ -41,5 +43,6 @@ function initInput() {
     document.addEventListener("keyup", keyReleased);
 
     car1.setUpControls(KEY_UP_ARROW, KEY_DOWN_ARROW, KEY_LEFT_ARROW, KEY_RIGHT_ARROW);
+    car2.setUpControls(KEY_LETTER_W, KEY_LETTER_S, KEY_LETTER_A, KEY_LETTER_D);
 
 }
