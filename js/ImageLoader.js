@@ -1,15 +1,6 @@
 var carPic = document.createElement("img");
 var trackPics = [];
-trackPics[TRACK_ROAD] = trackRoadPic;
-trackPics[TRACK_WALL] = trackWallPic;
-trackPics[TRACK_GOAL] = trackGoalPic;
-trackPics[TRACK_TREE] = trackTreePic;
-trackPics[TRACK_FLAG] = trackFlagPic;
-var trackRoadPic = document.createElement("img");
-var trackWallPic = document.createElement("img");
-var trackGoalPic = document.createElement("img");
-var trackTreePic = document.createElement("img");
-var trackFlagPic = document.createElement("img");
+
 var picsToLoad = 0;
 
 function loadImages() {
