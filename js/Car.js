@@ -7,67 +7,68 @@ const MIN_TURN_SPEED = 0.5;
 const INITIAL_CAR_SPEED = 0;
 const INITIAL_CAR_ANGLE = -0.5 * Math.PI;
 
-var carX, carY;
-var carSpeed = 0;
-var carSpeedXMultipler = 0.35;
-var carRadius = 10;
-var carAngle = 0;
+function carClass() {
 
-function moveCar() {
-    if (keyHeld_Gas) {
-        carSpeed += DRIVE_POWER;
+    this.carX
+    this.carY;
+    this.carSpeed = 0;
+    this.carAngle = 0;
+
+    this.initCar = function() {
+        this.resetCar();
     }
 
-    if (keyHeld_Reverse) {
-        carSpeed += -REVERSE_POWER;
+    this.moveCar = function() {
+        if (keyHeld_Gas) {
+            this.carSpeed += DRIVE_POWER;
+        }
+
+        if (keyHeld_Reverse) {
+            this.carSpeed += -REVERSE_POWER;
+        }
+
+        if (keyHeld_TurnRight) {
+            if (Math.abs(this.carSpeed) > MIN_TURN_SPEED) {
+                this.carAngle += TURN_RATE * Math.PI;
+            }
+        }
+
+        if (keyHeld_TurnLeft) {
+            if (Math.abs(this.carSpeed) > MIN_TURN_SPEED) {
+                this.carAngle += -TURN_RATE * Math.PI;
+            }
+        }
+
+        var nextCarX = this.carX + Math.cos(this.carAngle) * this.carSpeed;
+        var nextCarY = this.carY + Math.sin(this.carAngle) * this.carSpeed;
+        if (checkForTrackAtPixelCoord(nextCarX, nextCarY)) {
+            this.carX = nextCarX;
+            this.carY = nextCarY;
+        } else {
+            this.carSpeed = -0.3 * this.carSpeed;
+        }
+
+        this.carSpeed *= SPEED_DECAY_MULT;
     }
 
-    if (keyHeld_TurnRight) {
-        if (Math.abs(carSpeed) > MIN_TURN_SPEED) {
-            carAngle += TURN_RATE * Math.PI;
+    this.resetCar = function() {
+        this.carSpeed = INITIAL_CAR_SPEED;
+        this.carAngle = INITIAL_CAR_ANGLE;
+
+        for (var i = 0; i < trackGrid.length; i++) {
+            if (trackGrid[i] === TRACK_PLAYER) {
+                var tileRow = Math.floor(i / TRACK_COLS);
+                var tileCol = i % TRACK_COLS;
+
+                this.carX = tileCol * TRACK_WIDTH + 0.5 * TRACK_WIDTH;
+                this.carY = tileRow * TRACK_HEIGHT + 0.5 * TRACK_HEIGHT;
+                trackGrid[i] = TRACK_ROAD;
+                break;
+            }
         }
     }
 
-    if (keyHeld_TurnLeft) {
-        if (Math.abs(carSpeed) > MIN_TURN_SPEED) {
-            carAngle += -TURN_RATE * Math.PI;
-        }
+    this.drawCar = function() {
+        drawBitmapCenteredAtLocationWithRotation(carPic, this.carX, this.carY, this.carAngle);
     }
-
-    var nextCarX = carX + Math.cos(carAngle) * carSpeed;
-    var nextCarY = carY + Math.sin(carAngle) * carSpeed;
-    if (checkForTrackAtPixelCoord(nextCarX, nextCarY)) {
-        carX = nextCarX;
-        carY = nextCarY;
-    } else {
-        carSpeed = -0.3*carSpeed;
-    }
-
-    carSpeed *= SPEED_DECAY_MULT;
-}
-
-function resetCar() {
-    carSpeed = INITIAL_CAR_SPEED;
-    carAngle = INITIAL_CAR_ANGLE;
-
-    for (var i = 0; i < trackGrid.length; i++) {
-        if (trackGrid[i] === TRACK_PLAYER) {
-            var tileRow = Math.floor(i / TRACK_COLS);
-            var tileCol = i % TRACK_COLS;
-
-            carX = tileCol * TRACK_WIDTH + 0.5 * TRACK_WIDTH;
-            carY = tileRow * TRACK_HEIGHT + 0.5 * TRACK_HEIGHT;
-            trackGrid[i] = TRACK_ROAD;
-            break;
-        }
-    }
-}
-
-function initCar() {
-    resetCar();
-}
-
-function drawCar() {
-    //carAngle += 0.2;
-    drawBitmapCenteredAtLocationWithRotation(carPic, carX, carY, carAngle);
 }
