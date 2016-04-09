@@ -35,8 +35,8 @@ function startGame() {
             draw();
         }, 1000 / FPS);
 
-        car1.initCar();
-        car2.initCar();
+        car2.initCar(carPic2);
+        car1.initCar(carPic);
         initInput();
 }
 

@@ -20,7 +20,8 @@ function carClass() {
     this.carSpeed = 0;
     this.carAngle = 0;
 
-    this.initCar = function() {
+    this.initCar = function (whichGraphic) {
+        this.myBitmap = whichGraphic;
         this.resetCar();
     }
 
@@ -82,6 +83,6 @@ function carClass() {
     }
 
     this.drawCar = function() {
-        drawBitmapCenteredAtLocationWithRotation(carPic, this.carX, this.carY, this.carAngle);
+        drawBitmapCenteredAtLocationWithRotation(this.myBitmap, this.carX, this.carY, this.carAngle);
     }
 }
