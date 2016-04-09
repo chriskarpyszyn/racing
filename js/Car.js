@@ -7,6 +7,12 @@ const MIN_TURN_SPEED = 0.5;
 const INITIAL_CAR_SPEED = 0;
 const INITIAL_CAR_ANGLE = -0.5 * Math.PI;
 
+//control
+this.keyHeld_Gas = false;
+this.keyHeld_Reverse = false;
+this.keyHeld_TurnLeft = false;
+this.keyHeld_TurnRight = false;
+
 function carClass() {
 
     this.carX
@@ -18,22 +24,29 @@ function carClass() {
         this.resetCar();
     }
 
+    this.setUpControls = function (forwardKey, backKey, leftKey, rightKey) {
+        this.controlKeyForGas = forwardKey;
+        this.controlKeyForBreak = backKey;
+        this.controlKeyForTurnLeft = leftKey;
+        this.controlKeyForTurnRight = rightKey;
+    }
+
     this.moveCar = function() {
-        if (keyHeld_Gas) {
+        if (this.keyHeld_Gas) {
             this.carSpeed += DRIVE_POWER;
         }
 
-        if (keyHeld_Reverse) {
+        if (this.keyHeld_Reverse) {
             this.carSpeed += -REVERSE_POWER;
         }
 
-        if (keyHeld_TurnRight) {
+        if (this.keyHeld_TurnRight) {
             if (Math.abs(this.carSpeed) > MIN_TURN_SPEED) {
                 this.carAngle += TURN_RATE * Math.PI;
             }
         }
 
-        if (keyHeld_TurnLeft) {
+        if (this.keyHeld_TurnLeft) {
             if (Math.abs(this.carSpeed) > MIN_TURN_SPEED) {
                 this.carAngle += -TURN_RATE * Math.PI;
             }
