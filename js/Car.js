@@ -20,8 +20,9 @@ function carClass() {
     this.carSpeed = 0;
     this.carAngle = 0;
 
-    this.initCar = function (whichGraphic) {
+    this.initCar = function (whichGraphic, whichName) {
         this.myBitmap = whichGraphic;
+        this.myName = whichName;
         this.resetCar();
     }
 
@@ -61,7 +62,7 @@ function carClass() {
             this.carY = nextCarY;
         }
         else if (nextTileType === TRACK_GOAL) {
-            document.getElementById("debugText").innerHTML = "Someone hit the goal line!";
+            document.getElementById("debugText").innerHTML = `${this.myName} won the race.`;
 
         } else {
             this.carSpeed = -0.3 * this.carSpeed;

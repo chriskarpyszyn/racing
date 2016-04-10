@@ -22,7 +22,7 @@ function move() {
 }
 
 function draw() {
-    colorRect(0, 0, canvas.width, canvas.height, '#000000');
+    colorRect(0, 0, canvas.width, canvas.height, "#000000");
     drawTiles();
     car1.drawCar();
     car2.drawCar();
@@ -30,14 +30,14 @@ function draw() {
 }
 
 function startGame() {
-        setInterval(function() {
-            move();
-            draw();
-        }, 1000 / FPS);
+    setInterval(function() {
+        move();
+        draw();
+    }, 1000 / FPS);
 
-        car2.initCar(carPic2);
-        car1.initCar(carPic);
-        initInput();
+    car2.initCar(carPic2, "Light blue car");
+    car1.initCar(carPic, "Blue car");
+    initInput();
 }
 
 // function drawDebug() {
