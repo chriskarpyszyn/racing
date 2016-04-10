@@ -63,6 +63,8 @@ function carClass() {
         }
         else if (nextTileType === TRACK_GOAL) {
             document.getElementById("debugText").innerHTML = `${this.myName} won the race.`;
+            car1.resetCar();
+            car2.resetCar();
 
         } else {
             this.carSpeed = -0.3 * this.carSpeed;
@@ -75,17 +77,21 @@ function carClass() {
         this.carSpeed = INITIAL_CAR_SPEED;
         this.carAngle = INITIAL_CAR_ANGLE;
 
-        for (var i = 0; i < trackGrid.length; i++) {
-            if (trackGrid[i] === TRACK_PLAYER) {
-                var tileRow = Math.floor(i / TRACK_COLS);
-                var tileCol = i % TRACK_COLS;
+        if (this.homeX == undefined) {
+            for (var i = 0; i < trackGrid.length; i++) {
+                if (trackGrid[i] === TRACK_PLAYER) {
+                    var tileRow = Math.floor(i / TRACK_COLS);
+                    var tileCol = i % TRACK_COLS;
 
-                this.carX = tileCol * TRACK_WIDTH + 0.5 * TRACK_WIDTH;
-                this.carY = tileRow * TRACK_HEIGHT + 0.5 * TRACK_HEIGHT;
-                trackGrid[i] = TRACK_ROAD;
-                break;
+                    this.homeX = tileCol * TRACK_WIDTH + 0.5 * TRACK_WIDTH;
+                    this.homeY = tileRow * TRACK_HEIGHT + 0.5 * TRACK_HEIGHT;
+                    trackGrid[i] = TRACK_ROAD;
+                    break;
+                }
             }
         }
+        this.carX = this.homeX;
+        this.carY = this.homeY;
     }
 
     this.drawCar = function() {
