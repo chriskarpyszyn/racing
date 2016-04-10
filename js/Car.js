@@ -7,16 +7,13 @@ const MIN_TURN_SPEED = 0.5;
 const INITIAL_CAR_SPEED = 0;
 const INITIAL_CAR_ANGLE = -0.5 * Math.PI;
 
-//control
-this.keyHeld_Gas = false;
-this.keyHeld_Reverse = false;
-this.keyHeld_TurnLeft = false;
-this.keyHeld_TurnRight = false;
+function CarClass() {
+    //control
+    this.keyHeld_Gas = false;
+    this.keyHeld_Reverse = false;
+    this.keyHeld_TurnLeft = false;
+    this.keyHeld_TurnRight = false;
 
-function carClass() {
-
-    this.carX
-    this.carY;
     this.carSpeed = 0;
     this.carAngle = 0;
 
@@ -53,10 +50,9 @@ function carClass() {
                 this.carAngle += -TURN_RATE * Math.PI;
             }
         }
-
-        var nextCarX = this.carX + Math.cos(this.carAngle) * this.carSpeed;
-        var nextCarY = this.carY + Math.sin(this.carAngle) * this.carSpeed;
-        var nextTileType = getTrackAtPixelCoord(nextCarX, nextCarY);
+        const nextCarX = this.carX + Math.cos(this.carAngle) * this.carSpeed;
+        const nextCarY = this.carY + Math.sin(this.carAngle) * this.carSpeed;
+        const nextTileType = getTrackAtPixelCoord(nextCarX, nextCarY);
         if (nextTileType === TRACK_ROAD) {
             this.carX = nextCarX;
             this.carY = nextCarY;
@@ -78,11 +74,10 @@ function carClass() {
         this.carAngle = INITIAL_CAR_ANGLE;
 
         if (this.homeX == undefined) {
-            for (var i = 0; i < trackGrid.length; i++) {
+            for (let i = 0; i < trackGrid.length; i++) {
                 if (trackGrid[i] === TRACK_PLAYER) {
-                    var tileRow = Math.floor(i / TRACK_COLS);
-                    var tileCol = i % TRACK_COLS;
-
+                    const tileRow = Math.floor(i / TRACK_COLS);
+                    const tileCol = i % TRACK_COLS;
                     this.homeX = tileCol * TRACK_WIDTH + 0.5 * TRACK_WIDTH;
                     this.homeY = tileRow * TRACK_HEIGHT + 0.5 * TRACK_HEIGHT;
                     trackGrid[i] = TRACK_ROAD;

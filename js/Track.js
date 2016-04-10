@@ -66,17 +66,4 @@ function drawTiles() {
         trackX = 0;
         trackY += TRACK_HEIGHT;
     }
-
-    //for (var col = 0; col < TRACK_COLS; col++) {
-    //    for (var row = 0; row < TRACK_ROWS; row++) {
-
-    //        var trackX = col * TRACK_WIDTH;
-    //        var trackY = row * TRACK_HEIGHT;
-
-    //        var trackIndex = trackTileToIndex(col, row);
-    //        var trackType = trackGrid[trackIndex];
-
-    //        canvasContext.drawImage(trackPics[trackType], trackX, trackY);
-    //    }
-    //}
 }

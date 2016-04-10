@@ -4,8 +4,8 @@ var canvasContext;
 
 var imagesToLoad = 3;
 
-var car1 = new carClass();
-var car2 = new carClass();
+var car1 = new CarClass();
+var car2 = new CarClass();
 
 // var debug = false;
 
@@ -26,7 +26,6 @@ function draw() {
     drawTiles();
     car1.drawCar();
     car2.drawCar();
-    // drawDebug();
 }
 
 function startGame() {
@@ -39,13 +38,3 @@ function startGame() {
     car1.initCar(carPic, "Blue car");
     initInput();
 }
-
-// function drawDebug() {
-//     if (debug) {
-//         var circleSize = 2.5;
-//         colorCircle(carX, carY - carRadius, carSize, 'red');
-//         colorCircle(carX, carY + carRadius, carSize, 'green');
-//         colorCircle(carX - carRadius, carY, carSize, 'blue');
-//         colorCircle(carX + carRadius, carY, carSize, 'cyan');
-//     }
-// }

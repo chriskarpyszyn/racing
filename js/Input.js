@@ -24,7 +24,7 @@ function keyReleased(evt) {
 }
 
 function setKeyHoldState(keyCode, car, setTo) {
-    if (keyCode == car.controlKeyForGas) {
+    if (keyCode === car.controlKeyForGas) {
         car.keyHeld_Gas = setTo;
     }
     if (keyCode === car.controlKeyForBreak) {

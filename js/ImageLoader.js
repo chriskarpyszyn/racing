@@ -5,7 +5,7 @@ var trackPics = [];
 var picsToLoad = 0;
 
 function loadImages() {
-    var imageList = [
+    const imageList = [
         { varName: carPic, fileName: "player1.png" },
         { varName: carPic2, fileName: "player2.png" },
 
@@ -15,10 +15,9 @@ function loadImages() {
         { trackType: TRACK_TREE, fileName: "track_tree.png" },
         { trackType: TRACK_FLAG, fileName: "track_flag.png" }
     ];
-
     picsToLoad = imageList.length;
 
-    for (var i = 0; i < imageList.length; i++) {
+    for (let i = 0; i < imageList.length; i++) {
         if (imageList[i].trackType != undefined) {
             loadImagesForTrackCode(imageList[i].trackType, imageList[i].fileName);
         } else {
