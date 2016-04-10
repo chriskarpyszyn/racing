@@ -22,7 +22,7 @@ var trackGrid =
     1, 0, 0, 1, 0, 0, 0, 0, 1, 4, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
     1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 5, 0, 0, 1, 0, 0, 1,
-    1, 0, 0, 1, 0, 0, 5, 0, 0, 0, 5, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+    1, 0, 0, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 1, 0, 0, 1, 0, 0, 1,
     1, 2, 2, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 5, 0, 0, 1,
     1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
     0, 3, 0, 0, 0, 0, 1, 4, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
@@ -39,17 +39,16 @@ function isWallAtTileCoord(trackTileCol, trackTileRow) {
     return (trackGrid[trackIndex] === TRACK_WALL);
 }
 
-function checkForTrackAtPixelCoord(pixelX, pixelY) {
+function getTrackAtPixelCoord(pixelX, pixelY) {
     var tileCol = Math.floor(pixelX / TRACK_WIDTH);
     var tileRow = Math.floor(pixelY / TRACK_HEIGHT);
 
     if (tileCol < 0 || tileCol >= TRACK_COLS || tileRow < 0 || tileRow >= TRACK_ROWS) {
-        return false;
+        return TRACK_WALL;
     }
 
     var trackIndex = trackTileToIndex(tileCol, tileRow);
-
-    return (trackGrid[trackIndex] === TRACK_ROAD);
+    return trackGrid[trackIndex];
 }
 
 function drawTiles() {
